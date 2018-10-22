@@ -18,6 +18,7 @@
 
 # never commit config (as it contains secrets)
 .env
+.env.docker
 
 # do not commit venv folder
 pyenv

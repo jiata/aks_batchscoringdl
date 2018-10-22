@@ -1,0 +1,90 @@
+{
+    "apiVersion": "apps/v1beta1",
+    "kind": "Deployment",
+    "metadata": {
+        "labels": {
+            "purpose": "dequeue_messages"
+        },
+        "name": "dequeuer"
+    },
+    "spec": {
+        "replicas": 3,
+        "template": {
+            "metadata": {
+                "labels": {
+                    "app": "dequeuer"
+                }
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "env": [
+                            {
+                                "name": "LB_LIBRARY_PATH",
+                                "value": "$LD_LIBRARY_PATH:/usr/local/nvidia/lib64:/opt/conda/envs/py3.6/lib"
+                            },
+                            {
+                                "name": "DP_DISABLE_HEALTHCHECKS",
+                                "value": "xids"
+                            },
+                            {
+                                "name": "SB_SERVICE_NAMESPACE",
+                                "value": null
+                            },
+                            {
+                                "name": "SB_QUEUE",
+                                "value": "queue03"
+                            },
+                            {
+                                "name": "SB_SHARED_ACCESS_KEY_NAME",
+                                "value": "RootManageSharedAccessKey"
+                            },
+                            {
+                                "name": "SB_SHARED_ACCESS_KEY_VALUE",
+                                "value": "HXqXOOR40BExENe1m94mk0gw2rmyGkaft/IxKYK5ZoQ="
+                            },
+                            {
+                                "name": "STORAGE_ACCOUNT_NAME",
+                                "value": "jiataaks01"
+                            },
+                            {
+                                "name": "STORAGE_ACCOUNT_KEY",
+                                "value": "AWmCWX+lhmKLYszLO3Ybgjnj7Ka3a2RJE8HYGrsqobGu3s4Qghe7eKq0NKoSyxqUlYdftvy2nvpCkemVh30CFw=="
+                            }
+                        ],
+                        "image": "jiata/batchscoringdl_receiver:latest",
+                        "name": "dequeuer",
+                        "ports": [
+                            {
+                                "containerPort": 433
+                            }
+                        ],
+                        "resources": {
+                            "limits": {
+                                "alpha.kubernetes.io/nvidia-gpu": 1
+                            },
+                            "requests": {
+                                "alpha.kubernetes.io/nvidia-gpu": 1
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/usr/local/nvidia",
+                                "name": "nvidia"
+                            }
+                        ]
+                    }
+                ],
+                "volumes": [
+                    {
+                        "hostPath": {
+                            "path": "/usr/local/nvidia"
+                        },
+                        "name": "nvidia"
+                    }
+                ]
+            }
+        }
+    }
+}
+

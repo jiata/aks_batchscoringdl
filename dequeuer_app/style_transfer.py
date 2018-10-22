@@ -278,7 +278,7 @@ def run_style_transfer(
 
 
 # ===================================#
-# Main Process: Load content/style images & apply style transfer
+# Load content/style images & apply style transfer
 # ===================================#
 
 
@@ -290,7 +290,7 @@ def run(
     style_weight,
     content_weight,
     num_steps,
-    image_size
+    image_size,
 ):
 
     logger = logging.getLogger("root")
@@ -415,4 +415,98 @@ def run(
     logger.debug(
         "Average Time (in seconds) to apply style-transfer to each image: %f"
         % (style_transfer_time / num_images)
+    )
+
+
+# ===================================#
+# Main Entry process
+# ===================================#
+
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(description="Style Transfer script for Pytorch")
+    parser.add_argument(
+        "--style-image",
+        dest="style_image",
+        help="The path of the style image",
+        default="images/style_images/sample_vangogh.jpg",
+    )
+    parser.add_argument(
+        "--content-image-dir",
+        dest="content_image_dir",
+        help="The path of the directory of the content images.",
+        default="./images/content_images",
+    )
+    parser.add_argument(
+        "--content-image-list",
+        dest="content_image_list",
+        help="A comma separated list of images to use in the content_image_dir",
+        default=None,
+    )
+    parser.add_argument(
+        "--output-image-dir",
+        dest="output_image_dir",
+        help="The path where the output images would be stored.",
+        default="./images/output_images",
+    )
+    parser.add_argument(
+        "--style-weight",
+        dest="style_weight",
+        type=int,
+        help="The weight to use when optimizing the style loss.",
+        default=10 ** 8,
+    )
+    parser.add_argument(
+        "--content-weight",
+        dest="content_weight",
+        type=int,
+        help="The weight to use when optimizing the content loss.",
+        default=1,
+    )
+    parser.add_argument(
+        "--num-steps",
+        dest="num_steps",
+        type=int,
+        help="The number of steps to use when optimizing the style transfer loss function.",
+        default=300,
+    )
+    parser.add_argument(
+        "--image-size",
+        dest="image_size",
+        type=int,
+        help="The pixel dimension of the output image (W=H)",
+    )
+    args = parser.parse_args()
+
+    style_image = args.style_image
+    content_image_dir = args.content_image_dir
+    content_image_list = args.content_image_list
+    output_image_dir = args.output_image_dir
+    style_weight = args.style_weight
+    content_weight = args.content_weight
+    num_steps = args.num_steps
+    image_size = args.image_size
+
+    # set up logger
+    handler_format = logging.Formatter(
+        "%(asctime)s [%(name)s:%(filename)s:%(lineno)s] %(levelname)s - %(message)s"
+    )
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(handler_format)
+    logger = logging.getLogger("root")
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(console_handler)
+    logger.propagate = False
+
+    # call main run function
+    logger.debug("Starting neural style transfer...")
+    run(
+        style_image,
+        content_image_dir,
+        content_image_list,
+        output_image_dir,
+        style_weight,
+        content_weight,
+        num_steps,
+        image_size,
     )
