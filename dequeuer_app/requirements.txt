@@ -121,7 +121,7 @@ prometheus-client==0.4.2
 prompt-toolkit==2.0.6
 ptyprocess==0.6.0
 pycparser==2.19
-Pygments==2.2.0
+Pygments==2.7.4
 PyJWT==1.6.4
 python-dateutil==2.7.3
 python-dotenv==0.9.1
